@@ -18,9 +18,6 @@
                     <li class="nav-item active">
                         <router-link class="nav-link" to="/">Home</router-link>
                     </li>
-                    <li class="nav-item active">
-                        <router-link class="nav-link" to="/login">Login</router-link>
-                    </li>
                 </ul>
                 <span class="px-2">Juliemar</span> | 
                 <a href="#" class="px-2">Logout</a>

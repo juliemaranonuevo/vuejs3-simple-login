@@ -7,10 +7,11 @@
                     <div class="card">
                         <div class="card-header bg-white">Login</div>
                         <div class="card-body">
-                            <form>
+                            <form @submit.prevent="submit">
                                 <div class="form-group">
                                     <label for="email">Email</label>
                                     <input 
+                                        v-model="state.form.email"
                                         type="email" 
                                         class="form-control" 
                                         id="email" 
@@ -21,6 +22,7 @@
                                 <div class="form-group">
                                     <label for="password">Password</label>
                                     <input 
+                                        v-model="state.form.password"
                                         type="password" 
                                         class="form-control" 
                                         id="password" 
@@ -49,8 +51,32 @@
 </template>
 
 <script>
+import { reactive } from 'vue';
+import { useStore } from 'vuex';
+
 export default {
-    name: "Login"
+    name: "Login",
+    setup() {
+        const store = useStore();
+        const state = reactive({
+            form: {
+                email: '',
+                password: ''
+            }
+        });
+
+        async function submit() {
+            const formData = new FormData();
+            formData.append('email', state.form.email);
+            formData.append('password', state.form.password);
+            await store.dispatch('Auth/setAuth', formData);
+        }
+
+        return {
+            submit,
+            state
+        }
+    }
 }
 </script>
 

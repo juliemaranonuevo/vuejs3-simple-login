@@ -1,7 +1,7 @@
 import axios from '../plugins/axios';
 import router from '../router';
 
-export const UserModule = {
+export const AuthModule = {
     namespaced: true,
 
     state () {
@@ -24,12 +24,16 @@ export const UserModule = {
                 localStorage.setItem('_lastName', res.data.profile.lastName);
                 state.userAuth = res;
                 state.isLoggedIn = true;
+                
                 router.push('/')
             })
             .catch((err) => {
                 console.log(err);
             });
-        }
+        },
+        SET_IS_AUTHENTICATED(state, payload) {
+            state.userAuth = payload;
+        },
     },
 
     actions: {
@@ -38,6 +42,9 @@ export const UserModule = {
         },
         setAuth({ commit }, credentials) {
             commit('SET_USER_AUTH', credentials);
+        },
+        setIsAuthenticated({ commit }, token) {
+            commit('SET_IS_AUTHENTICATED', token);
         }
     },
 }

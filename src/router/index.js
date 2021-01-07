@@ -11,7 +11,10 @@ const routes = [
   {
     path: '/login',
     name: 'Login',
-    component: Login
+    component: Login,
+    meta: {
+        guest: true
+    }
   },
   {
     path: '/',
@@ -31,15 +34,39 @@ const router = createRouter({
 
 router.beforeEach((to, _, next) => {
     if (to.meta.middleware) {
+
         const middleware = require(`../middleware/${to.meta.middleware}`);
         if (middleware) {
+
             middleware.default(next, store);
+
         } else {
-          next();
+
+            next();
+
         }
+
+    } else if (to.matched.some(record => record.meta.guest)) {
+
+        const isAuth = store.state.Auth.isLoggedIn;
+        const token = localStorage.getItem('_token');
+        
+        if (!isAuth && !token) {
+            
+            next();
+
+        } else {
+
+            next('/home');
+
+        }
+
     } else {
-      next();
+    
+        next();
+     
     }
+
 })
 
 export default router
