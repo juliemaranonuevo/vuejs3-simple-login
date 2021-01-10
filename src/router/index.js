@@ -49,7 +49,7 @@ router.beforeEach((to, _, next) => {
     } else if (to.matched.some(record => record.meta.guest)) {
 
         const isAuth = store.state.Auth.isLoggedIn;
-        const token = localStorage.getItem('_token');
+        let token = store.state.Auth.userAuth;
         
         if (!isAuth && !token) {
             

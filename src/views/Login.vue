@@ -70,6 +70,25 @@ export default {
             formData.append('email', state.form.email);
             formData.append('password', state.form.password);
             await store.dispatch('Auth/setAuth', formData);
+
+            // await thisApi.post(`/login`, formData, {
+            //     withCredentials: true,
+            //     headers: {
+            //         'Accept': 'application/json',
+            //         'Content-Type': 'application/json',
+            //     },
+            // })
+            // .then((res) => {
+            //     document.cookie = `_token=${res.data.accessToken}`;
+            //     document.cookie = `_user=${res.data.profile.firstName}`;
+            //     store.dispatch('Auth/setAuth', res.data.accessToken);
+            //     store.dispatch('Auth/setIsLoggedIn', true);
+            //     router.push('/')
+            // })
+            // .catch((err) => {
+            //     console.log(err);
+            // });
+
         }
 
         return {

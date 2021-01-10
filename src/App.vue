@@ -15,18 +15,14 @@ export default {
             return this.$store.state.Auth.isLoggedIn;
         },
     },
-    mounted() {
-        const token = localStorage.getItem('_token');
+    mounted() {   
+        const token = document.cookie.match(new RegExp('s' + '=([^;]+)'));
         if (token) {
-            
             this.$store.dispatch('Auth/setIsLoggedIn', true);
-            this.$store.dispatch('Auth/setIsAuthenticated', token);
-        
+            this.$store.dispatch('Auth/setIsAuthenticated', token[1]);
         } else {
-
             this.$store.dispatch('Auth/setIsLoggedIn', false);
-            this.$store.dispatch('Auth/setIsAuthenticated', {});
-
+            this.$store.dispatch('Auth/setIsAuthenticated', '');
         }
     }
 }

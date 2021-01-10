@@ -20,18 +20,33 @@
                     </li>
                 </ul>
                 <span class="px-2">Juliemar</span> | 
-                <a href="#" class="px-2">Logout</a>
+                <a href="#" class="px-2" @click="logout">Logout</a>
             </div>
         </div>
     </nav>
 </template>
 
 <script>
+import myApi from '../plugins/axios';
+import { useStore } from 'vuex';
+
 export default {
-    name: "Header"
+    name: "Header",
+    setup() {
+        const store = useStore();
+        const token = store.state.Auth.userAuth;
+        myApi.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+        async function logout() {
+            await store.dispatch('Auth/setLogout');
+        }
+
+        return {
+            logout
+        }
+    }
 }
 </script>
 
 <style>
-
 </style>

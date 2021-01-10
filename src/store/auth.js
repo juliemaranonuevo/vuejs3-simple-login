@@ -1,4 +1,4 @@
-import axios from '../plugins/axios';
+import myApi from '../plugins/axios';
 import router from '../router';
 
 export const AuthModule = {
@@ -7,7 +7,13 @@ export const AuthModule = {
     state () {
         return {
             isLoggedIn: false,
-            userAuth: {}
+            userAuth: ''
+        }
+    },
+
+    getters: {
+        getToken: state => {
+            return state.userAuth;
         }
     },
 
@@ -16,16 +22,30 @@ export const AuthModule = {
             state.isLoggedIn = payload;
         },
         SET_USER_AUTH(state, payload) {
-            axios.post(`/login`, payload)
+            myApi.post(`/login`, payload, {
+                withCredentials: true,
+            })
             .then((res) => {
-                localStorage.setItem('_token', res.data.accessToken);
-                localStorage.setItem('_firstName', res.data.profile.firstName);
-                localStorage.setItem('_middleName', res.data.profile.middleName);
-                localStorage.setItem('_lastName', res.data.profile.lastName);
-                state.userAuth = res;
+                state.userAuth = res.data.accessToken;
                 state.isLoggedIn = true;
-                
+            
+                document.cookie = `s=${res.data.accessToken}`;
+                document.cookie = `n=${res.data.profile.firstName}`;
+ 
                 router.push('/')
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+        },
+        SET_IS_LOGGED_OUT(state) {
+            myApi.post(`/logout`)
+            .then(() => {
+                state.userAuth = '';
+                state.isLoggedIn = false;
+                document.cookie = 's=; Path=/; Expires=;';
+                document.cookie = 'n=; Path=/; Expires=;';
+                router.push('/login')
             })
             .catch((err) => {
                 console.log(err);
@@ -33,7 +53,7 @@ export const AuthModule = {
         },
         SET_IS_AUTHENTICATED(state, payload) {
             state.userAuth = payload;
-        },
+        }
     },
 
     actions: {
@@ -45,6 +65,9 @@ export const AuthModule = {
         },
         setIsAuthenticated({ commit }, token) {
             commit('SET_IS_AUTHENTICATED', token);
+        },
+        setLogout({ commit }) {
+            commit('SET_IS_LOGGED_OUT');
         }
     },
 }
